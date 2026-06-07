@@ -3,7 +3,7 @@ const std = @import("std");
 pub const AlignKind = enum { begin, middle, end };
 const Rect = struct { x: u32, y: u32, width: u32, height: u32 };
 
-pub fn Font(comptime T: type, comptime default_painter: T) type {
+pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, comptime default_familly: F) type {
     return struct {
         size: u32,
         spacing: u32 = 0,
@@ -12,6 +12,7 @@ pub fn Font(comptime T: type, comptime default_painter: T) type {
             x: AlignKind = .begin,
             y: AlignKind = .begin,
         },
+        familly: F = default_familly,
         painter: T = default_painter,
         pub fn measureText(font: *const @This(), txt: ?[]const u8, width: u32) struct { x: u32, y: u32 } {
             const text = txt orelse return .{ .x = 0, .y = 0 };
@@ -55,8 +56,7 @@ pub fn Font(comptime T: type, comptime default_painter: T) type {
                 const cp = std.unicode.utf8Decode(slice) catch continue;
                 const byte_index: i64 = @intCast(iter.i - slice.len);
 
-                var mut_painter = font.painter;
-                const rw = mut_painter.measure_rune(cp) * font.size / 2;
+                const rw = font.painter.measure_rune(cp, font.size, font.familly);
                 const rh = font.size;
 
                 if (width > 0 and line_x > 0 and line_x + word_x + rw > width) {
@@ -96,19 +96,58 @@ pub fn Font(comptime T: type, comptime default_painter: T) type {
             return .{ .end_at = -1, .size_x = line_x, .size_y = line_y };
         }
 
+        fn computeAlign(a: AlignKind, content: u32, container: u32) u32 {
+            if (container <= content) return 0;
+            const remaining = container - content;
+            return switch (a) {
+                .begin => 0,
+                .middle => remaining / 2,
+                .end => remaining,
+            };
+        }
+
         fn draw(font: *const @This(), txt: []const u8, rect: Rect) void {
-            _ = font;
-            _ = txt;
-            _ = rect;
+            const dim = font.measureText(txt, rect.width);
+
+            var y: u32 = rect.y + computeAlign(font.@"align".y, dim.y, rect.height);
+            var remaining: []const u8 = txt;
+
+            for (0..1024) |_| {
+                const line = font.getNextLine(remaining, rect.width);
+
+                var x: u32 = rect.x + computeAlign(font.@"align".x, line.size_x, rect.width);
+
+                const slice = if (line.end_at >= 0) remaining[0 .. @as(usize, @intCast(line.end_at)) + 1] else remaining;
+                var iter = std.unicode.Utf8Iterator{ .bytes = slice, .i = 0 };
+                while (iter.nextCodepointSlice()) |cp_slice| {
+                    const cp = std.unicode.utf8Decode(cp_slice) catch continue;
+                    if (cp == '\n') break;
+
+                    var mut_painter = font.painter;
+                    mut_painter.draw_rune(x, y, cp);
+                    const rw = font.painter.measure_rune(cp, font.size, font.familly);
+                    x += rw + font.spacing;
+                }
+
+                y += line.size_y;
+
+                if (line.end_at < 0) break;
+                const consumed: usize = @intCast(line.end_at);
+                if (consumed + 1 >= remaining.len) break;
+                remaining = remaining[consumed + 1 ..];
+                y += font.line_spacing;
+            }
         }
     };
 }
 
 test "measure text" {
     const Painter = struct {
-        pub fn measure_rune(p: *@This(), rune: u32) u32 {
-            _ = p;
+        pub fn measure_rune(painter: *const @This(), rune: u32, width: u32, familly: u32) u32 {
+            _ = painter;
             _ = rune;
+            _ = width;
+            _ = familly;
             return 1;
         }
     };
@@ -117,7 +156,7 @@ test "measure text" {
         input: struct {
             txt: ?[]const u8,
             width: u32,
-            font: Font(Painter, .{}),
+            font: Font(Painter, .{}, u32, 0),
         },
         expected: struct {
             x: u32,
@@ -159,7 +198,11 @@ test "draw text" {
     const Painter = struct {
         buffer: *[window_height][window_width]u8,
 
-        pub fn measure_rune(_: *@This(), _: u32) u32 {
+        pub fn measure_rune(painter: *const @This(), rune: u32, width: u32, familly: u32) u32 {
+            _ = painter;
+            _ = rune;
+            _ = width;
+            _ = familly;
             return 1;
         }
 
@@ -175,7 +218,7 @@ test "draw text" {
             txt: []const u8,
             window: struct { width: u32, height: u32 },
             rect: Rect,
-            font: Font(Painter, .{ .buffer = undefined }),
+            font: Font(Painter, .{ .buffer = undefined }, u32, 0),
         },
         expected: struct {
             buffer: [][]const u8,
@@ -202,9 +245,10 @@ test "draw text" {
         const w = tt.input.window.width;
         const h = tt.input.window.height;
 
-        const font = Font(Painter, .{ .buffer = undefined }){
+        const font = Font(Painter, .{ .buffer = undefined }, u32, 0){
             .size = tt.input.font.size,
             .spacing = tt.input.font.spacing,
+            .familly = 0,
             .line_spacing = tt.input.font.line_spacing,
             .@"align" = tt.input.font.@"align",
             .painter = Painter{ .buffer = &raw_buffer },
