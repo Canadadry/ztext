@@ -12,11 +12,87 @@ pub fn Font(comptime T: type, comptime default_painter: T) type {
             y: AlignKind = .begin,
         },
         painter: T = default_painter,
-        fn measureText(font: *const @This(), txt: ?[]const u8, width: u32) struct { x: u32, y: u32 } {
-            _ = font;
-            _ = txt;
-            _ = width;
-            return .{ .x = 0, .y = 0 };
+        pub fn measureText(font: *const @This(), txt: ?[]const u8, width: u32) struct { x: u32, y: u32 } {
+            const text = txt orelse return .{ .x = 0, .y = 0 };
+            if (text.len == 0) return .{ .x = 0, .y = 0 };
+
+            var out_x: u32 = 0;
+            var out_y: u32 = 0;
+            var remaining: []const u8 = text;
+            var first = true;
+
+            for (0..1024) |_| {
+                const line = font.getNextLine(remaining, width);
+                if (out_x < line.size_x) out_x = line.size_x;
+                if (!first) out_y += font.line_spacing;
+                out_y += line.size_y;
+                first = false;
+                if (line.end_at < 0) break;
+                const consumed: usize = @intCast(line.end_at);
+                if (consumed + 1 >= remaining.len) break;
+                remaining = remaining[consumed + 1 ..];
+            }
+
+            return .{ .x = out_x, .y = out_y };
+        }
+
+        fn getNextLine(font: *const @This(), txt: []const u8, width: u32) struct { end_at: i64, size_x: u32, size_y: u32 } {
+            if (txt.len == 0) return .{ .end_at = -1, .size_x = 0, .size_y = 0 };
+
+            var line_x: u32 = 0;
+            var line_y: u32 = 0;
+            var line_end: i64 = -1;
+
+            var word_x: u32 = 0;
+            var word_y: u32 = 0;
+            var word_end: i64 = -1;
+
+            var last_space_size: u32 = 0;
+
+            var iter = std.unicode.Utf8Iterator{ .bytes = txt, .i = 0 };
+            while (iter.nextCodepointSlice()) |slice| {
+                const cp = std.unicode.utf8Decode(slice) catch continue;
+                const byte_index: i64 = @intCast(iter.i - slice.len);
+
+                var mut_painter = font.painter;
+                const rw = mut_painter.measure_rune(cp) * font.size / 2;
+                const rh = font.size;
+
+                if (width > 0 and line_x > 0 and line_x + word_x + rw > width) {
+                    const result_x = if (line_x >= last_space_size + 2 * font.spacing)
+                        line_x - last_space_size - 2 * font.spacing
+                    else
+                        0;
+                    return .{ .end_at = line_end, .size_x = result_x, .size_y = line_y };
+                }
+
+                word_end = byte_index;
+                word_x += rw + font.spacing;
+                if (rh > word_y) word_y = rh;
+
+                if (cp == ' ' or cp == '\n') {
+                    last_space_size = rw;
+                    line_end = word_end;
+                    line_x += word_x;
+                    if (word_y > line_y) line_y = word_y;
+                    word_x = 0;
+                    word_y = 0;
+
+                    if (cp == '\n') {
+                        const result_x = if (line_x >= last_space_size + 2 * font.spacing)
+                            line_x - last_space_size - 2 * font.spacing
+                        else
+                            0;
+                        return .{ .end_at = line_end, .size_x = result_x, .size_y = line_y };
+                    }
+                }
+            }
+
+            if (word_end > line_end) line_end = word_end;
+            if (word_x > 0) line_x += word_x;
+            if (word_y > line_y) line_y = word_y;
+
+            return .{ .end_at = -1, .size_x = line_x, .size_y = line_y };
         }
     };
 }
