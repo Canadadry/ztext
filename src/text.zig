@@ -1,6 +1,7 @@
 const std = @import("std");
 
 pub const AlignKind = enum { begin, middle, end };
+const Rect = struct { x: u32, y: u32, width: u32, height: u32 };
 
 pub fn Font(comptime T: type, comptime default_painter: T) type {
     return struct {
@@ -94,6 +95,12 @@ pub fn Font(comptime T: type, comptime default_painter: T) type {
 
             return .{ .end_at = -1, .size_x = line_x, .size_y = line_y };
         }
+
+        fn draw(font: *const @This(), txt: []const u8, rect: Rect) void {
+            _ = font;
+            _ = txt;
+            _ = rect;
+        }
     };
 }
 
@@ -139,6 +146,81 @@ test "measure text" {
         if (got.y != tt.expected.y) {
             std.debug.print("FAIL [{s}]: y expected={d} got={d}\n", .{ tt.name, tt.expected.y, got.y });
             any_failed = true;
+        }
+    }
+
+    if (any_failed) return error.TestFailed;
+}
+
+test "draw text" {
+    const window_width = 32;
+    const window_height = 16;
+
+    const Painter = struct {
+        buffer: *[window_height][window_width]u8,
+
+        pub fn measure_rune(_: *@This(), _: u32) u32 {
+            return 1;
+        }
+
+        pub fn draw_rune(p: *@This(), x: u32, y: u32, cp: u32) void {
+            if (y >= window_height or x >= window_width) return;
+            p.buffer[y][x] = @intCast(cp & 0xFF);
+        }
+    };
+
+    const TestCase = struct {
+        name: []const u8,
+        input: struct {
+            txt: []const u8,
+            window: struct { width: u32, height: u32 },
+            rect: Rect,
+            font: Font(Painter, .{ .buffer = undefined }),
+        },
+        expected: struct {
+            buffer: [][]const u8,
+        },
+    };
+
+    var diagnostics = std.json.Diagnostics{};
+    var reader: std.Io.Reader = .fixed(@embedFile("draw-text-testscase.json"));
+    var json_reader = std.json.Reader.init(std.testing.allocator, &reader);
+    defer json_reader.deinit();
+    json_reader.enableDiagnostics(&diagnostics);
+
+    const tests = std.json.parseFromTokenSource([]TestCase, std.testing.allocator, &json_reader, .{}) catch |err| {
+        std.debug.print("{d}:{d} : {}\n", .{ diagnostics.getLine(), diagnostics.getColumn(), err });
+        return err;
+    };
+    defer tests.deinit();
+
+    var any_failed = false;
+    for (tests.value) |tt| {
+        var raw_buffer: [window_height][window_width]u8 = undefined;
+        for (&raw_buffer) |*row| @memset(row, ' ');
+
+        const w = tt.input.window.width;
+        const h = tt.input.window.height;
+
+        const font = Font(Painter, .{ .buffer = undefined }){
+            .size = tt.input.font.size,
+            .spacing = tt.input.font.spacing,
+            .line_spacing = tt.input.font.line_spacing,
+            .@"align" = tt.input.font.@"align",
+            .painter = Painter{ .buffer = &raw_buffer },
+        };
+
+        font.draw(tt.input.txt, tt.input.rect);
+
+        for (tt.expected.buffer, 0..) |expected_row, row_i| {
+            if (row_i >= h) break;
+            const actual = raw_buffer[row_i][0..w];
+            if (!std.mem.eql(u8, actual, expected_row)) {
+                std.debug.print("FAIL [{s}] row {d}:\n  expected: {s}\n  got:      {s}\n", .{
+                    tt.name, row_i, expected_row, actual,
+                });
+                any_failed = true;
+            }
         }
     }
 
