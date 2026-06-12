@@ -13,7 +13,12 @@
       }
     },
     "expected": {
-      "buffer": ["          ", "          ", "          ", "          "]
+      "buffer": [
+        "          ",
+        "          ",
+        "          ",
+        "          "
+      ]
     }
   },
   {
@@ -30,11 +35,16 @@
       }
     },
     "expected": {
-      "buffer": ["Hi        ", "          ", "          ", "          "]
+      "buffer": [
+        "Hi        ",
+        "          ",
+        "          ",
+        "          "
+      ]
     }
   },
   {
-    "name": "wrap_two_lines",
+    "name": "wrap_two_lines_smaall_window",
     "input": {
       "txt": "Hi world",
       "window": { "width": 10, "height": 4 },
@@ -47,11 +57,16 @@
       }
     },
     "expected": {
-      "buffer": ["Hi        ", "world     ", "          ", "          "]
+      "buffer": [
+        "Hi        ",
+        "world     ",
+        "          ",
+        "          "
+      ]
     }
   },
   {
-    "name": "align_begin_begin_single_line",
+    "name": "align_begin_begin_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
       "window": { "width": 10, "height": 4 },
@@ -64,11 +79,15 @@
       }
     },
     "expected": {
-      "buffer": ["          ", "  Hi      ", "          ", "          "]
+      "buffer": [
+        "          ",
+        "  Hi      ",
+        "          ",
+        "          "]
     }
   },
   {
-    "name": "align_begin_begin_multiline",
+    "name": "align_begin_begin_multiline_offset_and_small_window",
     "input": {
       "txt": "Hi\nworld",
       "window": { "width": 10, "height": 4 },
@@ -81,11 +100,16 @@
       }
     },
     "expected": {
-      "buffer": ["          ", "  Hi      ", "  world   ", "          "]
+      "buffer": [
+        "          ",
+        "  Hi      ",
+        "  world   ",
+        "          "
+      ]
     }
   },
   {
-    "name": "align_middle_begin_single_line",
+    "name": "align_middle_begin_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
       "window": { "width": 10, "height": 4 },
@@ -98,11 +122,15 @@
       }
     },
     "expected": {
-      "buffer": ["          ", "    Hi    ", "          ", "          "]
+      "buffer": [
+        "          ",
+        "    Hi    ",
+        "          ",
+        "          "]
     }
   },
   {
-    "name": "align_middle_begin_multiline",
+    "name": "align_middle_begin_multiline_offset_and_small_window",
     "input": {
       "txt": "Hi\nworld",
       "window": { "width": 12, "height": 4 },
@@ -115,11 +143,15 @@
       }
     },
     "expected": {
-      "buffer": ["            ", "     Hi     ", "  world     ", "            "]
+      "buffer": [
+        "            ",
+        "     Hi     ",
+        "   world    ",
+        "            "]
     }
   },
   {
-    "name": "align_end_begin_single_line",
+    "name": "align_end_begin_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
       "window": { "width": 10, "height": 4 },
@@ -132,11 +164,15 @@
       }
     },
     "expected": {
-      "buffer": ["          ", "      Hi  ", "          ", "          "]
+      "buffer": [
+        "          ",
+        "      Hi  ",
+        "          ",
+        "          "]
     }
   },
   {
-    "name": "align_end_begin_multiline",
+    "name": "align_end_begin_multiline_offset_and_small_window",
     "input": {
       "txt": "Hi\nworld",
       "window": { "width": 12, "height": 4 },
@@ -149,15 +185,19 @@
       }
     },
     "expected": {
-      "buffer": ["            ", "      Hi    ", "   world    ", "            "]
+      "buffer": [
+        "            ",
+        "        Hi  ",
+        "     world  ",
+        "            "]
     }
   },
   {
-    "name": "align_begin_middle_single_line",
+    "name": "align_begin_middle_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
-      "window": { "width": 10, "height": 6 },
-      "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
+      "window": { "width": 10, "height": 4 },
+      "rect": { "x": 2, "y": 1, "width": 6, "height": 3 },
       "font": {
         "size": 1,
         "spacing": 0,
@@ -170,17 +210,15 @@
         "          ",
         "          ",
         "  Hi      ",
-        "          ",
-        "          ",
         "          "
       ]
     }
   },
   {
-    "name": "align_begin_middle_multiline",
+    "name": "align_begin_middle_multiline_offset_and_small_window",
     "input": {
       "txt": "Hi\nworld",
-      "window": { "width": 10, "height": 6 },
+      "window": { "width": 10, "height": 5 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
         "size": 1,
@@ -195,16 +233,15 @@
         "          ",
         "  Hi      ",
         "  world   ",
-        "          ",
         "          "
       ]
     }
   },
   {
-    "name": "align_middle_middle_single_line",
+    "name": "align_middle_middle_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
-      "window": { "width": 10, "height": 6 },
+      "window": { "width": 10, "height": 5 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
         "size": 1,
@@ -219,16 +256,15 @@
         "          ",
         "    Hi    ",
         "          ",
-        "          ",
         "          "
       ]
     }
   },
   {
-    "name": "align_begin_end_single_line",
+    "name": "align_begin_end_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
-      "window": { "width": 10, "height": 6 },
+      "window": { "width": 10, "height": 5 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
         "size": 1,
@@ -243,16 +279,15 @@
         "          ",
         "          ",
         "          ",
-        "  Hi      ",
-        "          "
+        "  Hi      "
       ]
     }
   },
   {
-    "name": "align_begin_end_multiline",
+    "name": "align_begin_end_multiline_offset_and_small_window",
     "input": {
       "txt": "Hi\nworld",
-      "window": { "width": 10, "height": 6 },
+      "window": { "width": 10, "height": 5 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
         "size": 1,
@@ -267,16 +302,15 @@
         "          ",
         "          ",
         "  Hi      ",
-        "  world   ",
-        "          "
+        "  world   "
       ]
     }
   },
   {
-    "name": "align_end_end_single_line",
+    "name": "align_end_end_single_line_offset_and_small_window",
     "input": {
       "txt": "Hi",
-      "window": { "width": 10, "height": 6 },
+      "window": { "width": 10, "height": 5 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
         "size": 1,
@@ -291,8 +325,31 @@
         "          ",
         "          ",
         "          ",
+        "      Hi  "
+      ]
+    }
+  },
+
+  {
+    "name": "multiline_align_end_end_single_line_offset_and_small_window",
+    "input": {
+      "txt": "Hi\nworld",
+      "window": { "width": 10, "height": 5 },
+      "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
+      "font": {
+        "size": 1,
+        "spacing": 0,
+        "line_spacing": 0,
+        "align": { "x": "end", "y": "end" }
+      }
+    },
+    "expected": {
+      "buffer": [
+        "          ",
+        "          ",
+        "          ",
         "      Hi  ",
-        "          "
+        "   world  "
       ]
     }
   },
@@ -301,7 +358,7 @@
     "input": {
       "txt": "Hello world",
       "window": { "width": 12, "height": 4 },
-      "rect": { "x": 0, "y": 0, "width": 5, "height": 2 },
+      "rect": { "x": 5, "y": 0, "width": 15, "height": 2 },
       "font": {
         "size": 1,
         "spacing": 0,
@@ -310,7 +367,12 @@
       }
     },
     "expected": {
-      "buffer": ["Hello world ", "            ", "            ", "            "]
+      "buffer": [
+          "     Hello w",
+          "            ",
+          "            ",
+          "            "
+      ]
     }
   },
   {
@@ -327,7 +389,11 @@
       }
     },
     "expected": {
-      "buffer": ["éà        ", "          ", "          ", "          "]
+      "buffer": [
+        "éà        ",
+        "          ",
+        "          ",
+        "          "]
     }
   },
   {
@@ -338,7 +404,7 @@
       "rect": { "x": 0, "y": 0, "width": 10, "height": 4 },
       "font": {
         "size": 1,
-        "spacing": 8,
+        "spacing": 1,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
       }
@@ -356,7 +422,7 @@
       "font": {
         "size": 1,
         "spacing": 0,
-        "line_spacing": 16,
+        "line_spacing": 1,
         "align": { "x": "begin", "y": "begin" }
       }
     },
