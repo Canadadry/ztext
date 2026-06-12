@@ -112,11 +112,11 @@ pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, com
             var y: u32 = rect.y + computeAlign(font.@"align".y, dim.y, rect.height);
             var remaining: []const u8 = txt;
 
-            for (0..1024) |iter_i| {
+            for (0..1024) |_| {
                 const line = font.getNextLine(remaining, rect.width);
-                std.debug.print("[draw iter={d}] end_at={d} size_x={d} size_y={d} y={d} remaining={s}\n", .{
-                    iter_i, line.end_at, line.size_x, line.size_y, y, remaining,
-                });
+                // std.debug.print("[draw iter={d}] end_at={d} size_x={d} size_y={d} y={d} remaining={s}\n", .{
+                //     iter_i, line.end_at, line.size_x, line.size_y, y, remaining,
+                // });
                 var x: u32 = rect.x + computeAlign(font.@"align".x, line.size_x, rect.width);
 
                 const slice = if (line.end_at >= 0) remaining[0 .. @as(usize, @intCast(line.end_at)) + 1] else remaining;
@@ -197,7 +197,7 @@ test "draw text" {
     const window_height = 16;
 
     const Painter = struct {
-        buffer: *[window_height][window_width]u8,
+        buffer: *[window_height][window_width]u21,
 
         pub fn measure_rune(painter: *const @This(), rune: u32, width: u32, familly: u32) u32 {
             _ = painter;
@@ -209,7 +209,7 @@ test "draw text" {
 
         pub fn draw_rune(p: *@This(), x: u32, y: u32, cp: u32) void {
             if (y >= window_height or x >= window_width) return;
-            p.buffer[y][x] = @intCast(cp & 0xFF);
+            p.buffer[y][x] = std.math.cast(u21, cp) orelse std.unicode.replacement_character;
         }
     };
 
@@ -240,7 +240,8 @@ test "draw text" {
 
     var any_failed = false;
     for (tests.value) |tt| {
-        var raw_buffer: [window_height][window_width]u8 = undefined;
+        // std.debug.print("RUN [{s}]\n", .{tt.name});
+        var raw_buffer: [window_height][window_width]u21 = undefined;
         for (&raw_buffer) |*row| @memset(row, ' ');
 
         const w = tt.input.window.width;
@@ -260,13 +261,37 @@ test "draw text" {
         for (tt.expected.buffer, 0..) |expected_row, row_i| {
             if (row_i >= h) break;
             const actual = raw_buffer[row_i][0..w];
-            if (!std.mem.eql(u8, actual, expected_row)) {
-                std.debug.print("FAIL [{s}] row {d}:\n  expected: {s}\n  got:      {s}\n", .{
-                    tt.name, row_i, expected_row, actual,
+
+            // Décode expected_row (UTF-8) en codepoints u21
+            var expected_codepoints: [window_width]u21 = undefined;
+            var expected_len: usize = 0;
+            var exp_iter = std.unicode.Utf8Iterator{ .bytes = expected_row, .i = 0 };
+            while (exp_iter.nextCodepointSlice()) |slice| {
+                if (expected_len >= window_width) break;
+                expected_codepoints[expected_len] = std.math.cast(u21, std.unicode.utf8Decode(slice) catch '?') orelse '?';
+                expected_len += 1;
+            }
+
+            if (!std.mem.eql(u21, actual, expected_codepoints[0..expected_len])) {
+                // Ré-encode les deux côtés en UTF-8 pour un affichage lisible
+                var actual_utf8: [window_width * 4]u8 = undefined;
+                var actual_utf8_len: usize = 0;
+                for (actual) |cp| {
+                    actual_utf8_len += std.unicode.utf8Encode(cp, actual_utf8[actual_utf8_len..]) catch blk: {
+                        actual_utf8[actual_utf8_len] = '?';
+                        break :blk 1;
+                    };
+                }
+
+                std.debug.print("FAIL [{s}] row {d}:\n  expected: '{s}'\n  got:      '{s}'\n", .{
+                    tt.name, row_i, expected_row, actual_utf8[0..actual_utf8_len],
                 });
                 any_failed = true;
             }
         }
+        // if (!any_failed) {
+        //     std.debug.print("SUCCESS\n", .{});
+        // }
     }
 
     if (any_failed) return error.TestFailed;
