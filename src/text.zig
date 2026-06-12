@@ -112,9 +112,11 @@ pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, com
             var y: u32 = rect.y + computeAlign(font.@"align".y, dim.y, rect.height);
             var remaining: []const u8 = txt;
 
-            for (0..1024) |_| {
+            for (0..1024) |iter_i| {
                 const line = font.getNextLine(remaining, rect.width);
-
+                std.debug.print("[draw iter={d}] end_at={d} size_x={d} size_y={d} y={d} remaining={s}\n", .{
+                    iter_i, line.end_at, line.size_x, line.size_y, y, remaining,
+                });
                 var x: u32 = rect.x + computeAlign(font.@"align".x, line.size_x, rect.width);
 
                 const slice = if (line.end_at >= 0) remaining[0 .. @as(usize, @intCast(line.end_at)) + 1] else remaining;
@@ -143,12 +145,11 @@ pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, com
 
 test "measure text" {
     const Painter = struct {
-        pub fn measure_rune(painter: *const @This(), rune: u32, width: u32, familly: u32) u32 {
+        pub fn measure_rune(painter: *const @This(), rune: u32, size: u32, familly: u32) u32 {
             _ = painter;
             _ = rune;
-            _ = width;
             _ = familly;
-            return 1;
+            return size / 2;
         }
     };
     const TestCase = struct {

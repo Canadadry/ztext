@@ -6,7 +6,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 10, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -23,7 +23,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 10, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -40,7 +40,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 5, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -57,7 +57,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -74,7 +74,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -91,7 +91,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "middle", "y": "begin" }
@@ -108,7 +108,7 @@
       "window": { "width": 12, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 8, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "middle", "y": "begin" }
@@ -125,7 +125,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "end", "y": "begin" }
@@ -142,7 +142,7 @@
       "window": { "width": 12, "height": 4 },
       "rect": { "x": 2, "y": 1, "width": 8, "height": 3 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "end", "y": "begin" }
@@ -159,7 +159,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "middle" }
@@ -183,7 +183,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "middle" }
@@ -207,7 +207,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "middle", "y": "middle" }
@@ -231,7 +231,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "end" }
@@ -255,7 +255,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "end" }
@@ -279,7 +279,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 2, "y": 1, "width": 6, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "end", "y": "end" }
@@ -303,7 +303,7 @@
       "window": { "width": 12, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 5, "height": 2 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -320,7 +320,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 10, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -337,7 +337,7 @@
       "window": { "width": 10, "height": 4 },
       "rect": { "x": 0, "y": 0, "width": 10, "height": 4 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 8,
         "line_spacing": 0,
         "align": { "x": "begin", "y": "begin" }
@@ -354,7 +354,7 @@
       "window": { "width": 10, "height": 6 },
       "rect": { "x": 0, "y": 0, "width": 10, "height": 6 },
       "font": {
-        "size": 16,
+        "size": 1,
         "spacing": 0,
         "line_spacing": 16,
         "align": { "x": "begin", "y": "begin" }
