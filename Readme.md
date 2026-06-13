@@ -37,10 +37,10 @@ zig fetch --save https://github.com/Canadadry/ztext/archive/refs/heads/master.ta
 And add in your own `build.zig`:
 
 ```zig
-const ztext_mod = b.addModule("ztext", .{
-    .root_source_file = b.path("path/to/ztext/src/root.zig"),
+const ztext_dep = b.dependency("ztext", .{
+    .target = target,
+    .optimize = optimize,
 });
 
-// Then add it to your executable or library module:
-your_exe.root_module.addImport("ztext", ztext_mod);
+exe.root_module.addImport("ztext", ztext_dep.module("ztext"));
 ```
