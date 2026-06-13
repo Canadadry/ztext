@@ -222,5 +222,19 @@
       }
     },
     "expected": { "x": 40, "y": 36 }
+  },
+  {
+    "name": "zero_width",
+    "input": {
+      "txt": "Hi\nworld",
+      "width": 0,
+      "font": {
+        "size": 16,
+        "spacing": 0,
+        "line_spacing": 0,
+        "align": { "x": "begin", "y": "begin" }
+      }
+    },
+    "expected": { "x": 40, "y": 32 }
   }
 ]

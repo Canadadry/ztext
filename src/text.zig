@@ -126,7 +126,7 @@ pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, com
                     if (cp == '\n') break;
 
                     var mut_painter = font.painter;
-                    mut_painter.draw_rune(x, y, cp);
+                    mut_painter.draw_rune(x, y, cp, font.size, font.familly);
                     const rw = font.painter.measure_rune(cp, font.size, font.familly);
                     x += rw + font.spacing;
                 }
@@ -199,15 +199,17 @@ test "draw text" {
     const Painter = struct {
         buffer: *[window_height][window_width]u21,
 
-        pub fn measure_rune(painter: *const @This(), rune: u32, width: u32, familly: u32) u32 {
+        pub fn measure_rune(painter: *const @This(), rune: u32, size: u32, familly: u32) u32 {
             _ = painter;
             _ = rune;
-            _ = width;
+            _ = size;
             _ = familly;
             return 1;
         }
 
-        pub fn draw_rune(p: *@This(), x: u32, y: u32, cp: u32) void {
+        pub fn draw_rune(p: *@This(), x: u32, y: u32, cp: u32, size: u32, familly: u32) void {
+            _ = familly;
+            _ = size;
             if (y >= window_height or x >= window_width) return;
             p.buffer[y][x] = std.math.cast(u21, cp) orelse std.unicode.replacement_character;
         }
