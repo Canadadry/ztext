@@ -28,7 +28,13 @@ zig build example
 
 ## Adding ztext as a dependency
 
-In your own `build.zig`:
+just run
+
+```bash
+zig fetch --save https://github.com/Canadadry/ztext/archive/refs/heads/master.tar.gz
+```
+
+And add in your own `build.zig`:
 
 ```zig
 const ztext_mod = b.addModule("ztext", .{
