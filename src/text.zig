@@ -106,7 +106,7 @@ pub fn Font(comptime T: type, comptime default_painter: T, comptime F: type, com
             };
         }
 
-        fn draw(font: *const @This(), txt: []const u8, rect: Rect) void {
+        pub fn draw(font: *const @This(), txt: []const u8, rect: Rect) void {
             const dim = font.measureText(txt, rect.width);
 
             var y: u32 = rect.y + computeAlign(font.@"align".y, dim.y, rect.height);
